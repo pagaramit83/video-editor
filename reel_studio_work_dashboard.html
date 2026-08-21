@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Reel Studio — Work Management</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap');
+:root{
+ --bg:#0A0E14;--sidebar:#0B0F17;--surface:#12161F;--surface2:#1A2029;--track:#1C222D;
+ --border:#1F2530;--text:#E9ECF3;--muted:#8A93A6;--accent:#7C6CFB;--green:#22D3AA;
+ --warn:#F5A623;--danger:#F5566D;--blue:#4FA3E3;
+}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px Inter,system-ui,sans-serif}
+button,input,select,textarea{font:inherit}button{cursor:pointer}.app{display:flex;min-height:100vh}
+.sidebar{width:232px;position:fixed;left:0;top:0;bottom:0;background:var(--sidebar);border-right:1px solid var(--border);padding:18px 12px;display:flex;flex-direction:column;z-index:20}
+.brand{display:flex;align-items:center;gap:10px;padding:5px 8px 22px}.brand-icon{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent),var(--green));color:#0A0E14;font-weight:800}
+.brand-name{font:700 14px Sora}.brand-sub{font-size:10px;color:var(--muted);margin-top:2px}
+.nav{display:flex;flex-direction:column;gap:4px}.nav button{border:0;background:transparent;color:var(--muted);padding:11px 12px;border-radius:11px;text-align:left;display:flex;align-items:center;gap:11px}.nav button:hover,.nav button.active{background:#7C6CFB20;color:var(--accent)}
+.admin{margin-top:auto;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px}.avatar{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:#0A0E14;font-weight:800}
+.main{margin-left:232px;width:calc(100% - 232px);min-width:0}.topbar{height:62px;border-bottom:1px solid var(--border);background:#0A0E14DD;backdrop-filter:blur(10px);position:sticky;top:0;z-index:15;display:flex;align-items:center;gap:12px;padding:0 24px}.search{max-width:430px;position:relative;flex:1}.search span{position:absolute;left:12px;top:9px;color:var(--muted)}input,select,textarea{width:100%;background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:10px;padding:9px 12px;outline:0}input:focus,select:focus,textarea:focus{border-color:var(--accent)}.search input{padding-left:34px}.top-actions{display:flex;gap:8px;margin-left:auto}.content{padding:24px;max-width:1500px;margin:auto}
+h1,h2,h3{font-family:Sora;margin:0}h1{font-size:24px}h2{font-size:19px}h3{font-size:14px}.muted{color:var(--muted)}.small{font-size:12px}.page-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:16px}.page-head p{margin:6px 0 0;color:var(--muted)}
+.btn{border:1px solid var(--border);border-radius:11px;padding:9px 13px;background:transparent;color:var(--text);font-weight:600}.btn:hover{filter:brightness(1.12)}.btn.primary{background:var(--accent);border-color:var(--accent);color:#0A0E14}.btn.subtle{background:var(--surface)}.btn.danger{color:var(--danger);border-color:#F5566D50}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px}.grid{display:grid;gap:16px}.kpis{grid-template-columns:repeat(4,1fr)}.stat{min-height:108px}.stat-top{display:flex;justify-content:space-between;align-items:flex-start}.stat-icon{width:34px;height:34px;border-radius:10px;display:grid;place-items:center}.stat-value{font:700 25px Sora;margin-top:4px}.progress{height:8px;background:var(--track);border-radius:99px;overflow:hidden}.bar{height:100%;border-radius:99px;background:var(--accent);transition:.3s}
+.two{grid-template-columns:2fr 1fr}.three{grid-template-columns:repeat(3,1fr)}.section{margin-top:16px}.quick{display:flex;gap:8px;flex-wrap:wrap}.list{display:flex;flex-direction:column;gap:9px;max-height:270px;overflow:auto}.list-item{background:var(--surface2);border-radius:10px;padding:10px}.row{display:flex;justify-content:space-between;align-items:center;gap:10px}.badge{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border-radius:99px;font-size:11px;font-weight:600;border:1px solid currentColor}.dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+table{width:100%;border-collapse:collapse}th,td{padding:11px 9px;border-bottom:1px solid var(--border);text-align:left;font-size:12px}th{color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.05em}td{color:var(--text-secondary,#A4ACBB)}.table-wrap{overflow:auto}.actions{display:flex;gap:4px}.icon-btn{background:transparent;border:0;color:var(--muted);padding:7px;border-radius:8px}.icon-btn:hover{background:var(--surface2);color:var(--text)}.empty{text-align:center;color:var(--muted);padding:35px}
+.client-grid{grid-template-columns:repeat(3,1fr)}.client-card{cursor:pointer}.client-card:hover{border-color:#353D4B}.client-name{font-weight:700}.client-company{font-size:11px;color:var(--muted);margin-top:3px}.mini-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}.mini{text-align:center}.mini b{display:block;font-size:14px}.mini span{font-size:9px;color:var(--muted)}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}.filters>*{max-width:220px}
+.calendar{grid-template-columns:repeat(7,1fr)}.day{min-height:115px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:9px}.day-head{font-size:11px;color:var(--muted);margin-bottom:8px}.event{font-size:10px;padding:6px;border-radius:7px;background:var(--surface2);margin-bottom:5px;border-left:3px solid var(--accent)}
+.report-controls{display:flex;gap:8px;flex-wrap:wrap}.report-cards{grid-template-columns:repeat(4,1fr)}.settings-form{grid-template-columns:1fr 1fr}
+.modal{position:fixed;inset:0;background:#000000A8;backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;padding:18px;z-index:100}.modal.show{display:flex}.modal-box{width:min(700px,100%);max-height:92vh;overflow:auto;background:var(--surface);border:1px solid var(--border);border-radius:16px}.modal-head{display:flex;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--border)}.modal-body{padding:18px}.form-grid{grid-template-columns:1fr 1fr}.field{display:flex;flex-direction:column;gap:6px}.field label{font-size:11px;color:var(--muted)}.span2{grid-column:1/-1}.modal-foot{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid var(--border);padding:10px 14px;border-radius:11px;z-index:200;box-shadow:0 10px 30px #0008}
+.page{display:none}.page.active{display:block}.metric-good{color:var(--green)}.metric-warn{color:var(--warn)}.metric-danger{color:var(--danger)}.reminder{border-left:3px solid var(--warn);padding:10px 12px;background:#F5A62312;border-radius:8px;margin-bottom:8px}.leave-day{border-left:3px solid var(--blue);padding:10px 12px;background:#4FA3E312;border-radius:8px;margin-bottom:8px}.type-pill{padding:4px 8px;border-radius:7px;background:#7C6CFB18;color:#B7AEFF;font-size:10px;font-weight:700}.report-period{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+@media(max-width:1100px){.kpis,.report-cards{grid-template-columns:repeat(2,1fr)}.client-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:800px){.sidebar{display:none}.main{margin-left:0;width:100%}.mobile-nav{display:flex;position:fixed;bottom:0;left:0;right:0;background:var(--sidebar);border-top:1px solid var(--border);z-index:30;justify-content:space-around;padding:8px}.mobile-nav button{background:transparent;border:0;color:var(--muted);font-size:10px}.mobile-nav button.active{color:var(--accent)}.content{padding:16px;padding-bottom:70px}.top-actions .btn:first-child{display:none}.topbar{padding:0 14px}.page-head{align-items:flex-start;flex-direction:column}.two,.three,.client-grid,.form-grid,.settings-form{grid-template-columns:1fr}.kpis,.report-cards{grid-template-columns:repeat(2,1fr)}.calendar{grid-template-columns:repeat(2,1fr)}.span2{grid-column:auto}}
+@media print{body{background:white;color:#111}.sidebar,.topbar,.quick,.no-print{display:none!important}.main{margin:0;width:100%}.card{background:white;border:1px solid #ddd;color:#111}.page{display:none}.page.active{display:block}.muted{color:#555}table td,table th{color:#222;border-color:#ddd}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="brand"><div class="brand-icon">▶</div><div><div class="brand-name" id="brandName">Reel Studio</div><div class="brand-sub">Work Management</div></div></div>
+  <nav class="nav" id="nav"></nav>
+  <div class="admin"><div style="display:flex;gap:9px;align-items:center"><div class="avatar" id="avatar">A</div><div><div style="font-size:12px;font-weight:700" id="adminName">Amit</div><div class="small muted">Admin</div></div></div></div>
+</aside>
+
+<main class="main">
+<header class="topbar">
+  <div class="search"><span>⌕</span><input id="globalSearch" placeholder="Search clients, reels, status, IDs…"></div>
+  <div class="top-actions"><button class="btn subtle" onclick="openClient()">＋ Client</button><button class="btn subtle" onclick="openReel()">＋ Reel / Post</button><button class="btn primary" onclick="openLog()">✎ Log Work</button></div>
+</header>
+<div class="content" id="content"></div>
+</main>
+</div>
+<div class="mobile-nav" id="mobileNav"></div>
+
+<!-- Client modal -->
+<div class="modal" id="clientModal"><div class="modal-box"><div class="modal-head"><b id="clientModalTitle">Add New Client</b><button class="icon-btn" onclick="closeModal('clientModal')">✕</button></div><div class="modal-body">
+<form id="clientForm" class="grid form-grid">
+<input type="hidden" id="c_id">
+<div class="field"><label>Client Name *</label><input id="c_name" required placeholder="e.g. Amit Sharma"></div>
+<div class="field"><label>Company / Brand Name</label><input id="c_company" placeholder="e.g. Nimbus Foods"></div>
+<div class="field"><label>Contact Person</label><input id="c_contact"></div>
+<div class="field"><label>Phone</label><input id="c_phone"></div>
+<div class="field"><label>Email</label><input id="c_email" type="email"></div>
+<div class="field"><label>Monthly Reel Target *</label><input id="c_target" type="number" min="1" required></div>
+<div class="field"><label>Start Date</label><input id="c_start" type="date"></div>
+<div class="field"><label>End Date</label><input id="c_end" type="date"></div>
+<div class="field"><label>Client Status</label><select id="c_status"><option>Active</option><option>Paused</option><option>Completed</option><option>Inactive</option></select></div>
+<div class="field span2"><label>Notes</label><textarea id="c_notes"></textarea></div>
+<div class="modal-foot span2"><button type="button" class="btn" onclick="closeModal('clientModal')">Cancel</button><button class="btn primary">Save Client</button></div>
+</form></div></div></div>
+
+<!-- Reel modal -->
+<div class="modal" id="reelModal"><div class="modal-box"><div class="modal-head"><b id="reelModalTitle">Add Reel</b><button class="icon-btn" onclick="closeModal('reelModal')">✕</button></div><div class="modal-body">
+<form id="reelForm" class="grid form-grid">
+<input type="hidden" id="r_id">
+<div class="field span2"><label>Reel Title *</label><input id="r_title" required placeholder="e.g. Shravan Offer Reel"></div>
+<div class="field"><label>Client *</label><select id="r_client" required></select></div>
+<div class="field"><label>Content Type *</label><select id="r_contentType"><option>Reel</option><option>Post</option></select></div><div class="field"><label>Reel / Post Type</label><select id="r_type"><option>Product Reel</option><option>Promo Reel</option><option>Awareness Reel</option><option>Testimonial</option><option>Festival Reel</option><option>UGC Style</option><option>Brand Story</option><option>Other</option></select></div>
+<div class="field"><label>Assigned Date</label><input id="r_assigned" type="date"></div>
+<div class="field"><label>Deadline</label><input id="r_deadline" type="date"></div><div class="field"><label>Publish Due Date</label><input id="r_publishDue" type="date"></div>
+<div class="field"><label>Priority</label><select id="r_priority"><option>Low</option><option selected>Medium</option><option>High</option><option>Urgent</option></select></div>
+<div class="field"><label>Status</label><select id="r_status"></select></div>
+<div class="field"><label>Revision Count</label><input id="r_revision" type="number" min="0" value="0"></div>
+<div class="field"><label>Platform</label><select id="r_platform"><option value="">Select…</option><option>Instagram</option><option>YouTube</option><option>Facebook</option><option>Other</option></select></div>
+<div class="field span2"><label>Video / Drive Link</label><input id="r_video" placeholder="https://drive.google.com/..."></div>
+<div class="field span2"><label>Reference Link</label><input id="r_ref"></div>
+<div class="field span2"><label>Client Feedback / Revision Notes</label><textarea id="r_revisionNotes"></textarea></div>
+<div class="field span2"><label>Upload Link</label><input id="r_upload"></div>
+<div class="field span2"><label>Notes</label><textarea id="r_notes"></textarea></div>
+<div class="modal-foot span2"><button type="button" class="btn" onclick="closeModal('reelModal')">Cancel</button><button class="btn primary">Save Reel</button></div>
+</form></div></div></div>
+
+<!-- Leave modal -->
+<div class="modal" id="leaveModal"><div class="modal-box"><div class="modal-head"><b>Mark Leave / Non-Working Day</b><button class="icon-btn" onclick="closeModal('leaveModal')">✕</button></div><div class="modal-body">
+<form id="leaveForm" class="grid form-grid">
+<div class="field"><label>Date *</label><input id="lv_date" type="date" required></div>
+<div class="field"><label>Type</label><select id="lv_type"><option>Full Day Leave</option><option>Half Day</option><option>Holiday</option><option>Personal</option><option>Other</option></select></div>
+<div class="field span2"><label>Reason / Note</label><textarea id="lv_note" placeholder="e.g. College holiday / Personal leave"></textarea></div>
+<div class="modal-foot span2"><button type="button" class="btn" onclick="closeModal('leaveModal')">Cancel</button><button class="btn primary">Save Non-Working Day</button></div>
+</form></div></div></div>
+
+<!-- Log modal -->
+<div class="modal" id="logModal"><div class="modal-box"><div class="modal-head"><b>Daily Work Entry</b><button class="icon-btn" onclick="closeModal('logModal')">✕</button></div><div class="modal-body">
+<form id="logForm" class="grid form-grid">
+<div class="field"><label>Date *</label><input id="l_date" type="date" required></div>
+<div class="field"><label>Client *</label><select id="l_client" required></select></div>
+<div class="field span2"><label>Reel</label><select id="l_reel"></select></div>
+<div class="field"><label>Work Done</label><input id="l_work" placeholder="Editing / Color Grading / Export…"></div>
+<div class="field"><label>Status</label><select id="l_status"></select></div>
+<div class="field"><label>Time Spent (hours)</label><input id="l_time" type="number" min="0" step=".5"></div>
+<div class="field span2"><label>Notes</label><textarea id="l_notes"></textarea></div>
+<div class="modal-foot span2"><button type="button" class="btn" onclick="closeModal('logModal')">Cancel</button><button class="btn primary">Save Work</button></div>
+</form></div></div></div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const STATUS=["Pending","Editing","Internal Review","Sent to Client","Revision Required","Approved","Scheduled","Uploaded","Completed"];const CONTENT_TYPES=["Reel","Post"];const WORK_TYPES=["Editing","Design","Revision","Export","Upload","Planning","Other"];
+const NAV=[["dashboard","▦","Dashboard"],["clients","♙","Clients"],["reels","▶","Reels / Work"],["dailylog","✎","Daily Work Log"],["calendar","□","Calendar"],["reports","▤","Reports"],["analytics","⌁","Analytics"],["settings","⚙","Settings"]];
+const COLORS={Pending:"#8A93A6",Editing:"#7C6CFB","Internal Review":"#4FA3E3","Sent to Client":"#4FA3E3","Revision Required":"#F5A623",Approved:"#22D3AA",Scheduled:"#22D3AA",Uploaded:"#3DDC97",Completed:"#3DDC97"};
+const PRIORITY=["Low","Medium","High","Urgent"];
+const STORE="reel-studio-dashboard-html-v2";
+let state=JSON.parse(localStorage.getItem(STORE)||"null");
+let page="dashboard", selectedClient=null, editClient=null, editReel=null;
+
+function uid(p){return p+"_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,7)}
+function today(){return new Date().toISOString().slice(0,10)}
+function fmt(d){if(!d)return"—";return new Date(d+"T00:00:00").toLocaleDateString("en-GB",{day:"2-digit",month:"short",year:"numeric"})}
+function days(a,b){return Math.round((new Date(b)-new Date(a))/86400000)}
+function uploaded(s){return ["Uploaded","Completed"].includes(s)}
+function finished(s){return ["Approved","Scheduled","Uploaded","Completed"].includes(s)}
+function overdue(r){return r.deadline&&!uploaded(r.status)&&days(today(),r.deadline)<0}
+function esc(x){return String(x??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+function save(){localStorage.setItem(STORE,JSON.stringify(state))}
+function toast(x){let t=document.getElementById("toast");t.textContent=x;t.style.display="block";setTimeout(()=>t.style.display="none",2200)}
+function statusBadge(s){let c=COLORS[s]||"#8A93A6";return `<span class="badge" style="color:${c};background:${c}18"><i class="dot"></i>${esc(s)}</span>`}
+function stats(cid){let rs=state.reels.filter(r=>r.clientId===cid);return {
+ total:rs.length,pending:rs.filter(r=>r.status==="Pending").length,editing:rs.filter(r=>r.status==="Editing").length,
+ review:rs.filter(r=>["Internal Review","Sent to Client"].includes(r.status)).length,revision:rs.filter(r=>r.status==="Revision Required").length,
+ approved:rs.filter(r=>finished(r.status)).length,uploaded:rs.filter(r=>uploaded(r.status)).length,
+ rework:rs.filter(r=>(r.revisionCount||0)>0).length,overdue:rs.filter(overdue).length
+}}
+function clientName(id){return state.clients.find(c=>c.id===id)?.name||"—"}
+function health(c){let s=stats(c.id),target=c.target||1,tp=Math.min(100,s.approved/target*100),o=s.total?s.overdue/s.total:0,rv=s.total?s.rework/s.total:0,score=tp*.55+(1-o)*100*.25+(1-rv)*100*.2;if(score>=85)return["Excellent","#3DDC97"];if(score>=65)return["Healthy","#22D3AA"];if(score>=45)return["Attention Needed","#F5A623"];return["At Risk","#F5566D"]}
+function init(){
+ if(!state){state=sample();save()}
+ state.leaves=state.leaves||[]; state.reels=state.reels||[]; state.dailyLogs=state.dailyLogs||[];
+ document.getElementById("brandName").textContent=state.settings.company||"Reel Studio";
+ document.getElementById("adminName").textContent=state.settings.name||"Amit";
+ document.getElementById("avatar").textContent=(state.settings.name||"A")[0].toUpperCase();
+ buildNav();render();document.getElementById("globalSearch").addEventListener("input",render);
+}
+function sample(){
+ let clients=[],reels=[],logs=[],brands=["Studio 12","Nimbus","Vantage","Coral Kitchen","Fitzone","Aura Skincare","Bolt Rides","Peak Realty","Sage Wellness","Loop Motors"],targets=[8,10,12,15,16,18,20,10,14,20];
+ for(let i=0;i<10;i++){let cid=uid("client");clients.push({id:cid,name:"Client "+String(i+1).padStart(2,"0"),company:brands[i],contact:"Contact Person "+(i+1),phone:"+91 90000 0"+(1000+i+1),email:"client"+(i+1)+"@example.com",target:targets[i],startDate:today(),endDate:"",status:i===8?"Paused":i===9?"Inactive":"Active",notes:"Demo client — replace with your actual client."});
+  for(let j=1;j<=Math.max(4,Math.round(targets[i]*.8));j++){let st=STATUS[(i+j)%STATUS.length],dl=new Date();dl.setDate(dl.getDate()+((j%6)-2));reels.push({id:uid("reel"),title:["Product Reel","Promo Reel","Awareness Reel","Festival Reel","Brand Story"][(i+j)%5]+" "+j,clientId:cid,type:"Promo Reel",assignedDate:today(),deadline:dl.toISOString().slice(0,10),contentType:j%4===0?"Post":"Reel",status:st,priority:PRIORITY[(i+j)%4],revisionCount:st==="Revision Required"?1+(j%2):0,videoLink:"",refLink:"",revisionNotes:"Client requested revision.",platform:uploaded(st)?"Instagram":"",uploadLink:uploaded(st)?"https://instagram.com/":"",notes:"",createdAt:Date.now()-j*3600000})}}
+ for(let d=0;d<6;d++){let dt=new Date();dt.setDate(dt.getDate()-d);for(let e=0;e<3+(d%3);e++){let c=clients[(d+e)%clients.length],rs=reels.filter(r=>r.clientId===c.id),r=rs[e%rs.length];if(r)logs.push({id:uid("log"),date:dt.toISOString().slice(0,10),clientId:c.id,reelId:r.id,workDone:["Editing","Color Grading","Final Export","Revision","Review Prep"][e%5],status:r.status,timeSpent:[1,1.5,2,2.5][e%4],notes:""})}}
+ return {clients,reels,dailyLogs:logs,leaves:[],settings:{name:"Amit",company:"Freelance Video Editing",defaultTarget:15,workingDays:"Mon–Sat",reportFooter:"Generated automatically from live work data."}}
+}
+function buildNav(){document.getElementById("nav").innerHTML=NAV.map(n=>`<button class="${page===n[0]?"active":""}" onclick="go('${n[0]}')"><span>${n[1]}</span>${n[2]}</button>`).join("");document.getElementById("mobileNav").innerHTML=NAV.slice(0,5).map(n=>`<button class="${page===n[0]?"active":""}" onclick="go('${n[0]}')">${n[1]}<br>${n[2].split(" ")[0]}</button>`).join("")}
+function go(p){page=p;selectedClient=null;buildNav();render();window.scrollTo(0,0)}
+function render(){
+ let q=document.getElementById("globalSearch").value.trim().toLowerCase();
+ if(q){document.getElementById("content").innerHTML=searchPage(q);return}
+ let f={dashboard:dashboard,clients:clientsPage,reels:reelsPage,dailylog:dailyPage,calendar:calendarPage,reports:reportsPage,analytics:analyticsPage,settings:settingsPage}[page];
+ document.getElementById("content").innerHTML=f?f():"";
+}
+function head(title,sub,actions=""){return `<div class="page-head"><div><h1>${title}</h1><p>${sub}</p></div><div class="quick">${actions}</div></div>`}
+function stat(label,value,color,icon,sub="",prog=null){return `<div class="card stat"><div class="stat-top"><div><div class="small muted">${label}</div><div class="stat-value">${value}</div></div><div class="stat-icon" style="background:${color}20;color:${color}">${icon}</div></div>${sub?`<div class="small muted" style="margin-top:8px">${sub}</div>`:""}${prog!==null?`<div style="margin-top:10px"><div class="progress"><div class="bar" style="width:${Math.min(100,prog)}%;background:${color}"></div></div></div>`:""}</div>`}
+
+
+function leaveDays(){return state.leaves||[]}
+function isLeave(date){return leaveDays().some(x=>x.date===date)}
+function periodStart(period){
+  let d=new Date(today()+"T00:00:00");
+  if(period==="daily") return today();
+  let n=period==="weekly"?7:period==="monthly"?30:period==="3months"?90:period==="6months"?180:period==="9months"?270:365;
+  d.setDate(d.getDate()-n+1); return d.toISOString().slice(0,10);
+}
+function periodRows(period){
+  let start=periodStart(period),end=today();
+  return state.reels.filter(r=>(r.assignedDate||r.createdAt?.toString().slice(0,10)||"")>=start && (r.assignedDate||today())<=end);
+}
+function workdayCount(start,end){
+  let n=0,d=new Date(start+"T00:00:00"),e=new Date(end+"T00:00:00");
+  while(d<=e){let wd=d.getDay();let iso=d.toISOString().slice(0,10);if(wd!==0&&!isLeave(iso))n++;d.setDate(d.getDate()+1)}
+  return n;
+}
+function reminders(){
+  let out=[];
+  state.reels.forEach(r=>{
+    if(!uploaded(r.status)&&r.publishDue&&days(today(),r.publishDue)<=2) out.push({type:"upload",r});
+    if(!uploaded(r.status)&&r.deadline&&days(today(),r.deadline)<=1) out.push({type:"edit",r});
+    if(r.status==="Revision Required") out.push({type:"revision",r});
+  });
+  return out.slice(0,10);
+}
+function openLeave(){document.getElementById("lv_date").value=today();document.getElementById("lv_note").value="";document.getElementById("leaveModal").classList.add("show")}
+document.getElementById("leaveForm").addEventListener("submit",e=>{
+ e.preventDefault();state.leaves=state.leaves||[];
+ let d={id:uid("leave"),date:c("lv_date"),type:c("lv_type"),note:c("lv_note")};
+ state.leaves.push(d);save();closeModal("leaveModal");toast("Non-working day saved");render();
+});
+function deleteLeave(id){state.leaves=(state.leaves||[]).filter(x=>x.id!==id);save();render()}
+
+function dashboard(){
+ let active=state.clients.filter(c=>c.status==="Active").length,target=state.clients.reduce((a,c)=>a+(+c.target||0),0),completed=state.reels.filter(r=>finished(r.status)).length,pending=state.reels.filter(r=>r.status==="Pending").length,approved=completed,rework=state.reels.filter(r=>(r.revisionCount||0)>0).length,up=state.reels.filter(r=>uploaded(r.status)).length,od=state.reels.filter(overdue),urgent=state.reels.filter(r=>r.priority==="Urgent"&&!uploaded(r.status)),pct=target?Math.round(completed/target*100):0;
+ let upcoming=state.reels.filter(r=>!uploaded(r.status)&&r.deadline&&days(today(),r.deadline)>=0).sort((a,b)=>a.deadline.localeCompare(b.deadline)).slice(0,6);
+ let recent=[...state.reels].sort((a,b)=>(b.createdAt||0)-(a.createdAt||0)).slice(0,7);
+ return `<div class="page active">${head(`Good ${new Date().getHours()<12?"Morning":new Date().getHours()<17?"Afternoon":"Evening"}, ${esc(state.settings.name)} 👋`,"Here's your video editing work overview.",`<select onchange="dashboardRange=this.value" style="width:180px"><option>Today</option><option>This Week</option><option selected>This Month</option><option>Custom Date Range</option></select>`)}
+ <div class="quick section"><button class="btn subtle" onclick="openClient()">＋ Add Client</button><button class="btn subtle" onclick="openReel()">＋ Add Reel</button><button class="btn subtle" onclick="openLog()">✎ Daily Work Entry</button><button class="btn subtle" onclick="go('reports')">▤ Generate Report</button></div>
+ <div class="grid kpis section">${stat("Total Clients",state.clients.length,"#7C6CFB","♙",active+" active")}${stat("Monthly Reel Target",target,"#4FA3E3","⚡")}${stat("Reels Completed",completed,"#3DDC97","✓",pct+"% of target",pct)}${stat("Pending Reels",pending,"#8A93A6","◷")}${stat("Approved Reels",approved,"#22D3AA","✓")}${stat("Rejected / Rework",rework,"#F5A623","⚠")}${stat("Uploaded Reels",up,"#3DDC97","↑")}${stat("Overdue",od.length,"#F5566D","⚠")}</div>
+ <div class="grid two section"><div class="card"><div class="row"><h3>Target vs Actual</h3><span class="small muted">${completed} / ${target} reels</span></div><div style="margin-top:12px" class="progress"><div class="bar" style="width:${pct}%"></div></div><div class="grid three" style="margin-top:18px"><div><span class="small muted">Target</span><b style="display:block;font-size:20px">${target}</b></div><div><span class="small muted">Actual</span><b style="display:block;font-size:20px;color:var(--green)">${completed}</b></div><div><span class="small muted">Remaining</span><b style="display:block;font-size:20px;color:var(--warn)">${Math.max(0,target-completed)}</b></div></div></div>
+ <div class="card"><h3>Urgent Work</h3><div class="list" style="margin-top:10px">${urgent.length?urgent.slice(0,6).map(r=>`<div class="list-item"><b style="color:var(--danger);font-size:10px">⚠ URGENT</b><div style="margin-top:3px">${esc(clientName(r.clientId))} — ${esc(r.title)}</div><div class="small muted">Due ${fmt(r.deadline)}</div></div>`).join(""):`<div class="empty">No urgent reels right now.</div>`}</div></div></div>
+ <div class="grid" style="grid-template-columns:repeat(4,1fr);gap:16px" class="section"><div class="card"><h3>🔔 Reminders</h3><div style="margin-top:10px">${reminders().map(x=>`<div class="reminder"><b>${x.type==="upload"?"Upload pending":x.type==="revision"?"Revision pending":"Edit deadline near"}</b><div class="small muted">${esc(clientName(x.r.clientId))} — ${esc(x.r.title)}</div><div class="small">${x.r.publishDue?`Publish: ${fmt(x.r.publishDue)}`:`Edit: ${fmt(x.r.deadline)}`}</div></div>`).join("")||`<div class="empty">No urgent reminders.</div>`}</div></div><div class="card"><h3>Upcoming Deadlines</h3><div class="list" style="margin-top:10px">${upcoming.length?upcoming.map(r=>`<div class="list-item"><div class="row"><div><b>${esc(clientName(r.clientId))}</b><div class="small muted">${esc(r.title)} · ${fmt(r.deadline)}</div></div>${statusBadge(r.status)}</div></div>`).join(""):`<div class="empty">No upcoming deadlines.</div>`}</div></div>
+ <div class="card"><h3>🏖 Non-Working Days</h3><div class="list" style="margin-top:10px">${leaveDays().slice(-6).reverse().map(l=>`<div class="leave-day"><b>${fmt(l.date)}</b><div class="small muted">${esc(l.type)} · ${esc(l.note||"")}</div></div>`).join("")||`<div class="empty">No leave / holidays marked.</div>`}</div></div><div class="card"><div class="row"><h3>Overdue Reels</h3><span class="badge" style="color:var(--danger)">${od.length}</span></div><div class="list" style="margin-top:10px">${od.length?od.slice(0,6).map(r=>`<div class="list-item"><b>${esc(clientName(r.clientId))}</b> — ${esc(r.title)}<div class="small" style="color:var(--danger)">${Math.abs(days(today(),r.deadline))} days overdue</div></div>`).join(""):`<div class="empty">Nothing overdue. Great pace!</div>`}</div></div>
+ <div class="card"><h3>Recent Activity</h3><div class="list" style="margin-top:10px">${recent.map(r=>`<div class="small muted">● &nbsp;${esc(clientName(r.clientId))} — "${esc(r.title)}" is ${statusBadge(r.status)}</div>`).join("")||`<div class="empty">No recent activity.</div>`}</div></div></div></div>`
+}
+function clientsPage(){
+ let filter=window.clientFilter||"All";let list=state.clients.filter(c=>filter==="All"||c.status===filter);
+ return `<div class="page active">${head("Clients",`${state.clients.length} total · manage targets, contacts and status.`,`<select onchange="window.clientFilter=this.value;render()" style="width:150px"><option>All</option><option>Active</option><option>Paused</option><option>Completed</option><option>Inactive</option></select><button class="btn primary" onclick="openClient()">＋ Add New Client</button>`)}
+ <div class="grid client-grid">${list.map(c=>{let s=stats(c.id),pct=c.target?Math.round(s.approved/c.target*100):0,h=health(c);return `<div class="card client-card" onclick="openClientDetail('${c.id}')"><div class="row"><div><div class="client-name">${esc(c.name)}</div><div class="client-company">${esc(c.company)}</div></div>${statusBadge(c.status)}</div><div style="margin-top:15px"><div class="row small muted"><span>${s.approved} / ${c.target} reels</span><span>${pct}%</span></div><div class="progress" style="margin-top:6px"><div class="bar" style="width:${Math.min(100,pct)}%;background:${pct>=90?"var(--green)":pct>=50?"var(--accent)":"var(--warn)"}"></div></div></div><div class="mini-grid">${[["Reels",state.reels.filter(r=>r.clientId===c.id&&r.contentType!=="Post").length,"#7C6CFB"],["Posts",state.reels.filter(r=>r.clientId===c.id&&r.contentType==="Post").length,"#4FA3E3"],["Uploaded",s.uploaded,"#3DDC97"],["Rework",s.rework,"#F5A623"]].map(x=>`<div class="mini"><b style="color:${x[2]}">${x[1]}</b><span>${x[0]}</span></div>`).join("")}</div><div class="row" style="margin-top:14px"><span class="badge" style="color:${h[1]}">${h[0]}</span><span class="small muted">Since ${fmt(c.startDate)}</span></div><div class="row no-print" style="border-top:1px solid var(--border);margin-top:12px;padding-top:8px" onclick="event.stopPropagation()"><span></span><span><button class="icon-btn" onclick="openClient('${c.id}')">✎</button><button class="icon-btn" onclick="deleteClient('${c.id}')">🗑</button></span></div></div>`}).join("")}</div></div>`
+}
+function openClientDetail(id){selectedClient=id;renderClientDetail()}
+function renderClientDetail(){
+ let c=state.clients.find(x=>x.id===selectedClient);if(!c)return go("clients");let s=stats(c.id),pct=c.target?Math.round(s.approved/c.target*100):0;
+ document.getElementById("content").innerHTML=`<div class="page active"><button class="btn subtle" onclick="go('clients')">← Back to Clients</button><div class="card section"><div class="page-head" style="margin:0"><div><h1>${esc(c.name)}</h1><p>${esc(c.company)} · ${esc(c.contact)} · ${esc(c.email)} · ${esc(c.phone)}</p></div><div><button class="btn" onclick="openClient('${c.id}')">✎ Edit Client</button> <button class="btn primary" onclick="openReel(null,'${c.id}')">＋ Add Reel</button></div></div><div style="margin-top:18px"><div class="row small muted"><span>Target: ${c.target} · Completed: ${s.approved} · Pending: ${s.pending}</span><span>${pct}%</span></div><div class="progress" style="margin-top:7px"><div class="bar" style="width:${Math.min(100,pct)}%;background:${pct>=90?"var(--green)":"var(--accent)"}"></div></div></div></div>
+ <div class="grid" style="grid-template-columns:repeat(7,1fr);margin-top:16px">${[["Total",s.total,"#7C6CFB"],["Editing",s.editing,"#7C6CFB"],["Review",s.review,"#4FA3E3"],["Revision",s.revision,"#F5A623"],["Approved",s.approved,"#22D3AA"],["Uploaded",s.uploaded,"#3DDC97"],["Overdue",s.overdue,"#F5566D"]].map(x=>`<div class="card" style="text-align:center;padding:14px"><b style="font-size:18px;color:${x[2]}">${x[1]}</b><div class="small muted">${x[0]}</div></div>`).join("")}</div>
+ <div class="card section"><h3>Reel List</h3><div class="table-wrap" style="margin-top:10px">${reelTable(state.reels.filter(r=>r.clientId===c.id),false)}</div></div>${c.notes?`<div class="card section"><b>Notes</b><p class="muted">${esc(c.notes)}</p></div>`:""}</div>`
+}
+function reelTable(rows,showClient=true){
+ if(!rows.length)return `<div class="empty">No reels found.</div>`;
+ return `<table><thead><tr>${showClient?"<th>Client</th>":""}<th>Content</th><th>Title</th><th>Edit Due</th><th>Publish Due</th><th>Priority</th><th>Status</th><th>Revision</th><th class="no-print">Actions</th></tr></thead><tbody>${rows.map(r=>`<tr>${showClient?`<td>${esc(clientName(r.clientId))}</td>`:""}<td><span class="type-pill">${esc(r.contentType||"Reel")}</span></td><td><b>${esc(r.title)}</b><div class="small muted">${esc(r.type||"")}</div></td><td>${fmt(r.deadline)} ${overdue(r)?`<span class="badge" style="color:var(--danger)">Overdue</span>`:""}</td><td>${fmt(r.publishDue)} ${r.publishDue&&!uploaded(r.status)&&days(today(),r.publishDue)<0?`<span class="badge" style="color:var(--danger)">Not Uploaded</span>`:""}</td><td style="color:${r.priority==="Urgent"?"var(--danger)":r.priority==="High"?"var(--warn)":"var(--muted)"}">${r.priority}</td><td>${statusBadge(r.status)}</td><td>${r.revisionCount||0}</td><td class="no-print"><button class="icon-btn" onclick="openReel('${r.id}')">✎</button><button class="icon-btn" onclick="deleteReel('${r.id}')">🗑</button><select onchange="quickStatus('${r.id}',this.value)" style="width:130px;padding:6px"><option value="">Change…</option>${STATUS.map(s=>`<option>${s}</option>`).join("")}</select></td></tr>`).join("")}</tbody></table>`
+}
+function reelsPage(){
+ let q=(window.reelQ||"").toLowerCase(),cf=window.reelCF||"All",sf=window.reelSF||"All",pf=window.reelPF||"All",rt=window.reelType||"All";
+ let rows=state.reels.filter(r=>(cf==="All"||r.clientId===cf)&&(sf==="All"||r.status===sf)&&(pf==="All"||r.priority===pf)&&(rt==="All"||(r.contentType||"Reel")===rt)&&([r.title,r.id,r.status,clientName(r.clientId)].join(" ").toLowerCase().includes(q)));
+ return `<div class="page active">${head("Reels / Work","Track every reel from editing to upload.",`<button class="btn primary" onclick="openReel()">＋ Add Reel</button>`)}
+ <div class="filters"><input placeholder="Search reels…" value="${esc(window.reelQ||"")}" oninput="window.reelQ=this.value;render()" style="max-width:230px"><select onchange="window.reelCF=this.value;render()"><option>All</option>${state.clients.map(c=>`<option value="${c.id}" ${cf===c.id?"selected":""}>${esc(c.name)}</option>`).join("")}</select><select onchange="window.reelType=this.value;render()"><option>All</option><option>Reel</option><option>Post</option></select><select onchange="window.reelSF=this.value;render()"><option>All</option>${STATUS.map(s=>`<option ${sf===s?"selected":""}>${s}</option>`).join("")}</select><select onchange="window.reelPF=this.value;render()"><option>All</option>${PRIORITY.map(s=>`<option ${pf===s?"selected":""}>${s}</option>`).join("")}</select></div>
+ <div class="card"><div class="table-wrap">${reelTable(rows,true)}</div></div></div>`
+}
+function dailyPage(){
+ let date=window.dailyDate||today(),rows=state.dailyLogs.filter(l=>l.date===date),unique=new Set(rows.map(l=>l.clientId)).size,completed=rows.filter(l=>finished(l.status)).length,approved=completed,rev=rows.filter(l=>l.status==="Revision Required").length,up=rows.filter(l=>uploaded(l.status)).length;
+ return `<div class="page active">${head("Daily Work Log","Track what you worked on every day.",`<input type="date" value="${date}" onchange="window.dailyDate=this.value;render()" style="width:160px"><button class="btn" onclick="openLeave()">＋ Leave / Holiday</button><button class="btn primary" onclick="openLog()">＋ Log Work</button>`)}
+ <div class="grid" style="grid-template-columns:repeat(6,1fr)">${[["Clients Worked",unique],["Reels Worked",rows.length],["Completed",completed],["Approved",approved],["Revision",rev],["Uploaded",up]].map(x=>`<div class="card" style="text-align:center"><b style="font:700 20px Sora">${x[1]}</b><div class="small muted">${x[0]}</div></div>`).join("")}</div>
+ <div class="card section"><h3>Client-wise Breakdown</h3>${isLeave(date)?`<div class="leave-day" style="margin-top:10px"><b>🏖 Non-working day: ${esc((state.leaves||[]).find(x=>x.date===date)?.type||"Leave")}</b><div class="small muted">${esc((state.leaves||[]).find(x=>x.date===date)?.note||"No work expected on this date.")}</div></div>`:""}<div style="margin-top:10px">${[...new Set(rows.map(l=>l.clientId))].map(cid=>`<div class="row" style="padding:9px 0;border-bottom:1px solid var(--border)"><span>${esc(clientName(cid))}</span><span class="muted">${rows.filter(l=>l.clientId===cid).length} Reel(s)</span></div>`).join("")||`<div class="empty">No entries for this date.</div>`}</div>
+ <div class="table-wrap" style="margin-top:18px"><table><thead><tr><th>Date</th><th>Client</th><th>Reel</th><th>Work Done</th><th>Status</th><th>Time</th><th class="no-print">Action</th></tr></thead><tbody>${rows.map(l=>{let r=state.reels.find(x=>x.id===l.reelId);return `<tr><td>${fmt(l.date)}</td><td>${esc(clientName(l.clientId))}</td><td>${esc(r?.title||"—")}</td><td>${esc(l.workDone)}</td><td>${statusBadge(l.status)}</td><td>${l.timeSpent||0}h</td><td class="no-print"><button class="icon-btn" onclick="deleteLog('${l.id}')">🗑</button></td></tr>`}).join("")||`<tr><td colspan="7" class="empty">No entries for this date.</td></tr>`}</tbody></table></div></div></div>`
+}
+function calendarPage(){
+ let d=new Date(),y=d.getFullYear(),m=d.getMonth(),first=new Date(y,m,1).getDay(),daysIn=new Date(y,m+1,0).getDate(),cells="";
+ for(let i=0;i<first;i++)cells+=`<div></div>`;
+ for(let day=1;day<=daysIn;day++){let iso=new Date(y,m,day).toISOString().slice(0,10),rs=state.reels.filter(r=>r.deadline===iso).slice(0,5);cells+=`<div class="day"><div class="day-head">${day} ${day===new Date().getDate()&&m===new Date().getMonth()?"• Today":""}</div>${rs.map(r=>`<div class="event" style="border-color:${COLORS[r.status]||"var(--accent)"}">${esc(clientName(r.clientId))}<br><span class="muted">${esc(r.title)}</span></div>`).join("")}</div>`}
+ return `<div class="page active">${head(new Date(y,m).toLocaleString("en-IN",{month:"long",year:"numeric"}),"Deadlines and reel schedules.")}<div class="grid calendar section">${["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].map(x=>`<div class="small muted" style="padding:4px">${x}</div>`).join("")}${cells}</div></div>`
+}
+function reportsPage(){
+ let month=window.reportMonth??new Date().getMonth(),year=window.reportYear??new Date().getFullYear(),rows=state.clients.map(c=>{let s=stats(c.id),pct=c.target?Math.round(s.approved/c.target*100):0;return {c,s,pct}}),target=rows.reduce((a,x)=>a+x.c.target,0),done=rows.reduce((a,x)=>a+x.s.approved,0),approved=done,up=rows.reduce((a,x)=>a+x.s.uploaded,0);
+ return `<div class="page active">${head("Reports","Professional reports generated live from your work data.",`<button class="btn" onclick="downloadCSV()">↓ CSV</button><button class="btn" onclick="window.print()">🖨 Print / PDF</button>`)}
+ <div class="report-period">
+<label class="small muted">Report Period</label>
+<select id="reportPeriod" onchange="window.reportPeriod=this.value;render()">
+<option value="daily">Daily</option><option value="weekly">Weekly</option><option value="monthly">Monthly</option>
+<option value="3months">3 Months</option><option value="6months">6 Months</option><option value="9months">9 Months</option><option value="12months">12 Months</option>
+</select>
+</div>
+<div class="quick"><button class="btn ${(!window.reportTab||window.reportTab==="daily")?"primary":""}" onclick="window.reportTab='daily';render()">Daily Report</button><button class="btn ${window.reportTab==="monthly"?"primary":""}" onclick="window.reportTab='monthly';render()">Monthly Report</button><button class="btn ${window.reportTab==="company"?"primary":""}" onclick="window.reportTab='company';render()">Company Submission</button></div>
+ ${(window.reportPeriod&&window.reportPeriod!=="daily"&&window.reportTab!=="company")?periodReport(window.reportPeriod):(window.reportTab==="daily"?dailyReport():window.reportTab==="monthly"?monthlyReport(rows,target,done,approved,up):companyReport(rows,target,done,approved,up))}</div>`
+}
+function dailyReport(){let date=window.dailyDate||today(),rows=state.dailyLogs.filter(l=>l.date===date);return `<div class="card section"><div class="row"><div><div class="small" style="color:var(--accent)">${esc(state.settings.company)}</div><h2>Daily Work Report</h2><div class="muted">Date: ${fmt(date)}</div></div><div><button class="btn" onclick="downloadDailyCSV()">↓ CSV</button> <button class="btn" onclick="window.print()">🖨 PDF</button></div></div><div class="grid report-cards section">${[["Clients Worked",new Set(rows.map(l=>l.clientId)).size],["Reels Worked",rows.length],["Completed",rows.filter(l=>finished(l.status)).length],["Approved",rows.filter(l=>finished(l.status)).length]].map(x=>`<div class="card" style="text-align:center"><b style="font-size:20px">${x[1]}</b><div class="small muted">${x[0]}</div></div>`).join("")}</div>${reelLogTable(rows)}</div>`}
+function reelLogTable(rows){return `<div class="table-wrap section"><table><thead><tr><th>Date</th><th>Client</th><th>Work Done</th><th>Status</th><th>Time</th><th>Notes</th></tr></thead><tbody>${rows.map(l=>`<tr><td>${fmt(l.date)}</td><td>${esc(clientName(l.clientId))}</td><td>${esc(l.workDone)}</td><td>${statusBadge(l.status)}</td><td>${l.timeSpent||0}h</td><td>${esc(l.notes||"")}</td></tr>`).join("")}</tbody></table></div>`}
+function periodReport(period){
+ let rows=periodRows(period),start=periodStart(period),end=today();
+ let reels=rows.length,done=rows.filter(r=>finished(r.status)).length,approved=rows.filter(r=>r.status==="Approved"||uploaded(r.status)).length,uploads=rows.filter(r=>uploaded(r.status)).length,rework=rows.filter(r=>(r.revisionCount||0)>0).length,pending=rows.filter(r=>!finished(r.status)).length;
+ let rs=rows.filter(r=>r.contentType==="Reel"),ps=rows.filter(r=>r.contentType==="Post");
+ let hours=state.dailyLogs.filter(l=>l.date>=start&&l.date<=end).reduce((a,l)=>a+(+l.timeSpent||0),0);
+ let working=workdayCount(start,end),leaves=leaveDays().filter(l=>l.date>=start&&l.date<=end).length;
+ return `<div class="card section"><div class="row"><div><div class="small" style="color:var(--accent)">${esc(state.settings.company)}</div><h2>${period==="daily"?"Daily":period==="weekly"?"Weekly":period==="monthly"?"Monthly":period==="3months"?"3-Month":"12-Month"} Work Report</h2><div class="muted">${fmt(start)} — ${fmt(end)}</div></div><div><button class="btn" onclick="window.print()">🖨 Print / PDF</button></div></div>
+ <div class="grid report-cards section">${[["Reels",rs.length],["Posts",ps.length],["Completed",done],["Approved",approved],["Uploaded",uploads],["Revision / Rework",rework],["Pending",pending],["Hours",hours+"h"],["Working Days",working],["Leave Days",leaves],["Clients Worked",new Set(rows.map(r=>r.clientId)).size],["Productivity",working?Math.round(reels/working*10)/10+" / day":"0"]].map(x=>`<div class="card" style="text-align:center"><b style="font-size:19px">${x[1]}</b><div class="small muted">${x[0]}</div></div>`).join("")}</div>
+ <div class="table-wrap section"><table><thead><tr><th>Client</th><th>Reels</th><th>Posts</th><th>Completed</th><th>Approved</th><th>Uploaded</th><th>Revision</th><th>Pending</th></tr></thead><tbody>${state.clients.map(c=>{let cr=rows.filter(r=>r.clientId===c.id),r=cr.filter(x=>x.contentType!=="Post"),p=cr.filter(x=>x.contentType==="Post");return `<tr><td>${esc(c.name)}</td><td>${r.length}</td><td>${p.length}</td><td>${cr.filter(x=>finished(x.status)).length}</td><td>${cr.filter(x=>x.status==="Approved").length}</td><td>${cr.filter(x=>uploaded(x.status)).length}</td><td>${cr.filter(x=>(x.revisionCount||0)>0).length}</td><td>${cr.filter(x=>!finished(x.status)).length}</td></tr>`}).join("")}</tbody></table></div></div>`;
+}
+function monthlyReport(rows,target,done,approved,up){return `<div class="card section"><div class="row"><div><div class="small" style="color:var(--accent)">${esc(state.settings.company)}</div><h2>Monthly Report</h2></div><div class="report-controls"><select onchange="window.reportMonth=+this.value;render()">${Array.from({length:12},(_,i)=>`<option value="${i}" ${i===+((window.reportMonth??new Date().getMonth()))?"selected":""}>${new Date(2026,i,1).toLocaleString("en-IN",{month:"long"})}</option>`).join("")}</select><select onchange="window.reportYear=+this.value;render()">${[new Date().getFullYear()-1,new Date().getFullYear(),new Date().getFullYear()+1].map(y=>`<option ${y===(window.reportYear??new Date().getFullYear())?"selected":""}>${y}</option>`).join("")}</select></div></div><div class="grid report-cards section">${[["Target",target],["Completed",done],["Approved",approved],["Uploaded",up]].map(x=>`<div class="card" style="text-align:center"><b style="font-size:20px">${x[1]}</b><div class="small muted">${x[0]}</div></div>`).join("")}</div><div class="table-wrap section"><table><thead><tr><th>Client</th><th>Target</th><th>Completed</th><th>Approved</th><th>Revision</th><th>Uploaded</th><th>Pending</th><th>Progress</th><th>Performance</th></tr></thead><tbody>${rows.map(x=>{let perf=x.pct>=90?["Excellent","#3DDC97"]:x.pct>=75?["Good","#22D3AA"]:x.pct>=50?["Average","#F5A623"]:["Needs Attention","#F5566D"];return `<tr><td>${esc(x.c.name)}</td><td>${x.c.target}</td><td>${x.s.approved}</td><td>${x.s.approved}</td><td>${x.s.revision}</td><td>${x.s.uploaded}</td><td>${x.s.pending}</td><td>${x.pct}%</td><td><span class="badge" style="color:${perf[1]}">${perf[0]}</span></td></tr>`}).join("")}</tbody></table></div></div>`}
+function companyReport(rows,target,done,approved,up){let pct=target?Math.round(done/target*100):0,best=[...rows].sort((a,b)=>b.pct-a.pct)[0];return `<div class="card section"><div class="row"><div><div class="small" style="color:var(--accent)">${esc(state.settings.company)}</div><h2>Company Submission Report</h2><div class="muted">Editor: ${esc(state.settings.name)} · Reporting Period: ${new Date().toLocaleString("en-IN",{month:"long",year:"numeric"})}</div></div></div><div class="grid report-cards section">${[["Total Clients",state.clients.length],["Total Target",target],["Total Completed",done],["Total Approved",approved],["Total Revision",rows.reduce((a,x)=>a+x.s.revision,0)],["Total Uploaded",up],["Total Pending",rows.reduce((a,x)=>a+x.s.pending,0)],["Overall %",pct+"%"]].map(x=>`<div class="card" style="text-align:center"><b style="font-size:20px">${x[1]}</b><div class="small muted">${x[0]}</div></div>`).join("")}</div><div class="section"><h3>Key Observations</h3><ul class="muted">${[`Overall monthly target completion is ${pct}%.`,best?`${best.c.name} has the highest progress at ${best.pct}%.`:"",`${rows.reduce((a,x)=>a+x.s.pending,0)} reels are currently pending.`,`${rows.reduce((a,x)=>a+x.s.revision,0)} reels are in revision.`,`${up} reels have been uploaded so far.`].filter(Boolean).map(x=>`<li>${x}</li>`).join("")}</ul></div><div class="table-wrap section"><table><thead><tr><th>Client</th><th>Target</th><th>Completed</th><th>Approved</th><th>Revision</th><th>Uploaded</th><th>Pending</th><th>Progress</th></tr></thead><tbody>${rows.map(x=>`<tr><td>${esc(x.c.name)}</td><td>${x.c.target}</td><td>${x.s.approved}</td><td>${x.s.approved}</td><td>${x.s.revision}</td><td>${x.s.uploaded}</td><td>${x.s.pending}</td><td>${x.pct}%</td></tr>`).join("")}</tbody></table></div><p class="small muted">${esc(state.settings.reportFooter)}</p></div>`}
+function analyticsPage(){
+ let target=state.clients.reduce((a,c)=>a+(+c.target||0),0),done=state.reels.filter(r=>finished(r.status)).length,pct=target?Math.round(done/target*100):0;
+ let status=STATUS.map(s=>[s,state.reels.filter(r=>r.status===s).length]);
+ return `<div class="page active">${head("Analytics","A quick view of workload, status mix and client performance.")}<div class="grid kpis">${stat("Completion Rate",pct+"%","#7C6CFB","⌁","vs total target",pct)}${stat("Total Reels",state.reels.length,"#4FA3E3","▶")}${stat("Rework",state.reels.filter(r=>(r.revisionCount||0)>0).length,"#F5A623","↻")}${stat("Overdue",state.reels.filter(overdue).length,"#F5566D","⚠")}</div><div class="grid two section"><div class="card"><h3>Status Distribution</h3><div class="list" style="margin-top:12px">${status.map(x=>`<div><div class="row small"><span>${x[0]}</span><b>${x[1]}</b></div><div class="progress" style="margin-top:4px"><div class="bar" style="width:${state.reels.length?x[1]/state.reels.length*100:0}%;background:${COLORS[x[0]]||"var(--accent)"}"></div></div></div>`).join("")}</div></div><div class="card"><h3>Client Performance</h3><div class="list" style="margin-top:12px">${state.clients.map(c=>{let s=stats(c.id),p=c.target?Math.round(s.approved/c.target*100):0;return `<div><div class="row small"><span>${esc(c.name)}</span><b>${p}%</b></div><div class="progress" style="margin-top:4px"><div class="bar" style="width:${Math.min(100,p)}%;background:${p>=90?"var(--green)":p>=50?"var(--accent)":"var(--warn)"}"></div></div></div>`}).join("")}</div></div></div></div>`
+}
+function settingsPage(){return `<div class="page active">${head("Settings","Personalize your workspace and report branding.")}<div class="card"><form id="settingsForm" class="grid settings-form"><div class="field"><label>My Name</label><input id="s_name" value="${esc(state.settings.name)}"></div><div class="field"><label>Company Name</label><input id="s_company" value="${esc(state.settings.company)}"></div><div class="field"><label>Default Monthly Target</label><input id="s_target" type="number" value="${state.settings.defaultTarget}"></div><div class="field"><label>Working Days</label><input id="s_days" value="${esc(state.settings.workingDays)}"></div><div class="field span2"><label>Report Footer Text</label><textarea id="s_footer">${esc(state.settings.reportFooter)}</textarea></div><div class="modal-foot span2"><button class="btn primary">Save Settings</button></div></form></div><div class="card section"><h3>About this workspace</h3><p class="muted small">All dashboard data is saved automatically in this browser using localStorage — clients, reels, daily work and settings persist after refresh.</p></div></div>`}
+function searchPage(q){let cs=state.clients.filter(c=>[c.name,c.company,c.email].join(" ").toLowerCase().includes(q)),rs=state.reels.filter(r=>[r.title,r.id,r.status,r.deadline,clientName(r.clientId)].join(" ").toLowerCase().includes(q));return `<div class="page active">${head(`Search results for "${esc(q)}"`,`${cs.length} clients · ${rs.length} reels`) }<div class="card"><h3>Clients (${cs.length})</h3>${cs.map(c=>`<div style="padding:11px 0;border-bottom:1px solid var(--border);cursor:pointer" onclick="openClientDetail('${c.id}')"><b>${esc(c.name)}</b> <span class="muted">· ${esc(c.company)}</span></div>`).join("")||`<div class="empty">No matches.</div>`}</div><div class="card section"><h3>Reels (${rs.length})</h3>${rs.map(r=>`<div class="row" style="padding:11px 0;border-bottom:1px solid var(--border)"><span>${esc(clientName(r.clientId))} — ${esc(r.title)}</span>${statusBadge(r.status)}</div>`).join("")||`<div class="empty">No matches.</div>`}</div></div>`}
+
+function populateClients(selId,selected){let el=document.getElementById(selId);el.innerHTML=`<option value="">Select…</option>`+state.clients.map(c=>`<option value="${c.id}" ${c.id===selected?"selected":""}>${esc(c.name)} — ${esc(c.company)}</option>`).join("")}
+function openClient(id=null){editClient=id?state.clients.find(c=>c.id===id):null;document.getElementById("clientModalTitle").textContent=editClient?"Edit Client":"Add New Client";let f=editClient||{name:"",company:"",contact:"",phone:"",email:"",target:state.settings.defaultTarget||15,startDate:today(),endDate:"",status:"Active",notes:""};["id","name","company","contact","phone","email","target","start","end","status","notes"].forEach(k=>{let map={id:"c_id",name:"c_name",company:"c_company",contact:"c_contact",phone:"c_phone",email:"c_email",target:"c_target",start:"c_start",end:"c_end",status:"c_status",notes:"c_notes"}[k];if(map)document.getElementById(map).value=f[k==="id"?"id":k==="start"?"startDate":k==="end"?"endDate":k]??""});document.getElementById("clientModal").classList.add("show")}
+document.getElementById("clientForm").addEventListener("submit",e=>{e.preventDefault();let id=document.getElementById("c_id").value,d={name:c("c_name"),company:c("c_company"),contact:c("c_contact"),phone:c("c_phone"),email:c("c_email"),target:+c("c_target"),startDate:c("c_start"),endDate:c("c_end"),status:c("c_status"),notes:c("c_notes")};if(!d.name||d.target<1)return alert("Client name and positive monthly target are required.");if(id)state.clients=state.clients.map(x=>x.id===id?{...x,...d}:x);else state.clients.push({...d,id:uid("client"),createdAt:Date.now()});save();closeModal("clientModal");toast(id?"Client updated":"Client added");render()});
+function deleteClient(id){if(!confirm("Delete this client and all their reels?"))return;state.clients=state.clients.filter(c=>c.id!==id);state.reels=state.reels.filter(r=>r.clientId!==id);state.dailyLogs=state.dailyLogs.filter(l=>l.clientId!==id);save();toast("Client deleted");render()}
+function openReel(id=null,preset=null){editReel=id?state.reels.find(r=>r.id===id):null;document.getElementById("reelModalTitle").textContent=editReel?"Edit Reel":"Add Reel";populateClients("r_client",editReel?.clientId||preset);document.getElementById("r_status").innerHTML=STATUS.map(s=>`<option>${s}</option>`).join("");let f=editReel||{title:"",clientId:preset||"",contentType:"Reel",type:"Promo Reel",assignedDate:today(),deadline:"",publishDue:"",priority:"Medium",status:"Pending",revisionCount:0,platform:"",videoLink:"",refLink:"",revisionNotes:"",uploadLink:"",notes:""};let mp={id:"r_id",title:"r_title",clientId:"r_client",contentType:"r_contentType",type:"r_type",assignedDate:"r_assigned",deadline:"r_deadline",publishDue:"r_publishDue",priority:"r_priority",status:"r_status",revisionCount:"r_revision",platform:"r_platform",videoLink:"r_video",refLink:"r_ref",revisionNotes:"r_revisionNotes",uploadLink:"r_upload",notes:"r_notes"};Object.keys(mp).forEach(k=>document.getElementById(mp[k]).value=f[k]??"");document.getElementById("reelModal").classList.add("show")}
+document.getElementById("reelForm").addEventListener("submit",e=>{e.preventDefault();let id=c("r_id"),d={title:c("r_title"),clientId:c("r_client"),contentType:c("r_contentType"),type:c("r_type"),assignedDate:c("r_assigned"),deadline:c("r_deadline"),publishDue:c("r_publishDue"),priority:c("r_priority"),status:c("r_status"),revisionCount:+c("r_revision"),platform:c("r_platform"),videoLink:c("r_video"),refLink:c("r_ref"),revisionNotes:c("r_revisionNotes"),uploadLink:c("r_upload"),notes:c("r_notes")};if(!d.title||!d.clientId)return alert("Reel title and client are required.");if(id)state.reels=state.reels.map(r=>r.id===id?{...r,...d}:r);else state.reels.push({...d,id:uid("reel"),createdAt:Date.now()});save();closeModal("reelModal");toast(id?"Reel updated":"Reel added");render()});
+function deleteReel(id){if(!confirm("Delete this reel?"))return;state.reels=state.reels.filter(r=>r.id!==id);save();toast("Reel deleted");render()}
+function quickStatus(id,s){if(!s)return;state.reels=state.reels.map(r=>{if(r.id!==id)return r;let x={...r,status:s};if(s==="Revision Required")x.revisionCount=(r.revisionCount||0)+1;return x});save();toast("Status updated");render()}
+function openLog(){populateClients("l_client");document.getElementById("l_date").value=today();document.getElementById("l_reel").innerHTML="<option value=''>Select…</option>";document.getElementById("l_status").innerHTML=STATUS.map(s=>`<option>${s}</option>`).join("");document.getElementById("logModal").classList.add("show")}
+document.getElementById("l_client").addEventListener("change",()=>{let cid=c("l_client");document.getElementById("l_reel").innerHTML="<option value=''>Select…</option>"+state.reels.filter(r=>r.clientId===cid).map(r=>`<option value="${r.id}">${esc(r.title)}</option>`).join("")})
+document.getElementById("logForm").addEventListener("submit",e=>{e.preventDefault();state.dailyLogs.push({id:uid("log"),date:c("l_date"),clientId:c("l_client"),reelId:c("l_reel"),workDone:c("l_work"),status:c("l_status"),timeSpent:c("l_time"),notes:c("l_notes")});save();closeModal("logModal");toast("Work logged");render()})
+function deleteLog(id){state.dailyLogs=state.dailyLogs.filter(x=>x.id!==id);save();toast("Work entry deleted");render()}
+document.getElementById("settingsForm")?.addEventListener("submit",e=>e.preventDefault())
+function closeModal(id){document.getElementById(id).classList.remove("show")}
+function c(id){return document.getElementById(id).value}
+function downloadCSV(){let rows=state.clients.map(c=>{let s=stats(c.id);return[c.name,c.target,state.reels.filter(r=>r.clientId===c.id&&r.contentType!=="Post").length,state.reels.filter(r=>r.clientId===c.id&&r.contentType==="Post").length,s.approved,s.revision,s.uploaded,s.pending]});download("company-submission.csv","Client,Target,Reels,Posts,Completed,Revision,Uploaded,Pending\n"+rows.map(r=>r.map(x=>`"${String(x).replaceAll('"','""')}"`).join(",")).join("\n"))}
+function downloadDailyCSV(){let d=window.dailyDate||today(),rows=state.dailyLogs.filter(l=>l.date===d);download("daily-report-"+d+".csv","Date,Client,WorkDone,Status,TimeSpent,Notes\n"+rows.map(l=>[l.date,clientName(l.clientId),l.workDone,l.status,l.timeSpent,l.notes].map(x=>`"${String(x||"").replaceAll('"','""')}"`).join(",")).join("\n"))}
+function download(name,text){let a=document.createElement("a");a.href=URL.createObjectURL(new Blob([text],{type:"text/csv"}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)}
+document.addEventListener("submit",e=>{if(e.target.id==="settingsForm"){e.preventDefault();state.settings.name=c("s_name");state.settings.company=c("s_company");state.settings.defaultTarget=+c("s_target")||15;state.settings.workingDays=c("s_days");state.settings.reportFooter=c("s_footer");save();init();toast("Settings saved")}})
+init();
+</script>
+</body>
+</html>
